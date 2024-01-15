@@ -28,6 +28,8 @@ private slots:
 
     void on_tableView_clicked(const QModelIndex &index);
 
+    void on_btnRefrash_clicked();
+
 private:
     Ui::MainWindow *ui;
     QSqlDatabase db;//переменная для работы с бд

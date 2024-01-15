@@ -21,9 +21,20 @@ MainWindow::MainWindow(QWidget *parent)//КОНСТРУКТОР
 
         model = new QSqlTableModel(this, db);//Связали модель с БД
         model->setTable("users");//Указали какую таблицу присваиваем
-        //model->setEditStrategy(QSqlTableModel::OnManualSubmit);
         model->select();//Запросили данные
+
+        //Меняем названия столбцов
+        model->setHeaderData(1, Qt::Horizontal, "Фамилия", Qt::DisplayRole);
+        model->setHeaderData(2, Qt::Horizontal, "Имя", Qt::DisplayRole);
+        model->setHeaderData(3, Qt::Horizontal, "Отчество", Qt::DisplayRole);
+        model->setHeaderData(4, Qt::Horizontal, "Подразделение", Qt::DisplayRole);
+        ///
+
         ui->tableView->setModel(model);//Передали модель в табличное представление
+        ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);//выравнивание таблицы по содержимому
+        ui->tableView->setColumnHidden(0, true);//спрятали стольбец "id"
+        ui->tableView->setSelectionBehavior(QAbstractItemView::SelectRows);//ВЫДЕЛЕНИЕ СТРОКИ целеком
+        ui->tableView->setSortingEnabled(true);
 
     }else{
         ui->statusbar->showMessage("Error..." + db.lastError().databaseText());
@@ -54,5 +65,12 @@ void MainWindow::on_btnRemove_clicked()
 void MainWindow::on_tableView_clicked(const QModelIndex &index)
 {
     currentRow = index.row();//Сохраняем в переменную номер строки, на которую нажали
+}
+
+//Кнопка обновить User(ов)
+void MainWindow::on_btnRefrash_clicked()
+{
+    model->select();
+    ui->tableView->selectRow(currentRow);//после обновления оставляем выделение на выбраной строке
 }
 
